@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Watch Store</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      .input-group {
+        margin: 10px 0;
+      }
+      button {
+        padding: 8px 16px;
+        margin: 5px;
+      }
+      #result {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Watch Store Management</h1>
+
+    <div class="input-group">
+      <label>Max Price: </label>
+      <input type="number" id="maxPrice" />
+      <button onclick="getCheaperWatches()">Show Cheaper Watches</button>
+    </div>
+
+    <div class="input-group">
+      <label>New Manufacturer: </label>
+      <input type="text" id="newManufacturer" />
+      <button onclick="updateManufacturer()">Update All Manufacturers</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+      async function getCheaperWatches() {
+        const maxPrice = document.getElementById('maxPrice').value;
+        const response = await fetch(
+          `http://localhost:3000/watches/cheaper-than?maxPrice=${maxPrice}`,
+        );
+        const brands = await response.json();
+        document.getElementById('result').innerHTML = `<strong>Brands:</strong> ${
+          brands.join(', ') || 'None'
+        }`;
+      }
+
+      async function updateManufacturer() {
+        const newManufacturer = document.getElementById('newManufacturer').value;
+        await fetch('http://localhost:3000/watches/manufacturer', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ manufacturer: newManufacturer }),
+        });
+        alert('Manufacturer updated successfully!');
+      }
+    </script>
+  </body>
+</html>
